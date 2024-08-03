@@ -93,7 +93,8 @@
                     <div class="service-card p-3 border rounded bg-white shadow-sm">
                         <img src="assets/images/img3.png" class="mb-3 rounded-circle" alt="Consultation">
                         <h3>Consultation</h3>
-                        <p>Get expert advice and personalized recommendations to enhance your interior spaces from us.</p>
+                        <p>Get expert advice and personalized recommendations to enhance your interior spaces from us.
+                        </p>
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
@@ -151,25 +152,26 @@
     </section>
 
     <!-- Contact Section -->
-    <!-- Contact Section -->
     <section id="contact" class="container my-5">
         <div class="row ms-md-3">
             <div class="col-md-6">
                 <h2>Contact Us</h2>
                 <p>If you have any questions or would like to discuss a project, feel free to reach out to us. We're
                     here to help you bring your vision to life.</p>
-                <form>
+                <form id="contactForm">
                     <div class="mb-3">
                         <label for="name" class="form-label">Name</label>
-                        <input type="text" class="form-control" id="name" placeholder="Your Name">
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Your Name" required>
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label">Email address</label>
-                        <input type="email" class="form-control" id="email" placeholder="Your Email">
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Your Email"
+                            required>
                     </div>
                     <div class="mb-3">
                         <label for="message" class="form-label">Message</label>
-                        <textarea class="form-control" id="message" rows="4" placeholder="Your Message"></textarea>
+                        <textarea class="form-control" id="message" name="message" rows="4" placeholder="Your Message"
+                            required></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary-custom">Send Message</button>
                 </form>
@@ -192,7 +194,6 @@
         </div>
     </section>
 
-
     <!-- Footer -->
     <footer class="py-4 bg-dark text-light text-center">
         <div class="container">
@@ -213,6 +214,74 @@
         var carouselElement = document.querySelector('#projectsCarousel');
         var carousel = new bootstrap.Carousel(carouselElement, {
             interval: 5000
+        });
+
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzTlCJc8YMJh6aS3Lj-_Z-evJWU0lvBiWb3e9RqT-zyheqDnMlAbmBuX1O8Lz-P8_Hs/exec'; // Replace with your Web App URL
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('contactForm');
+            const nameInput = document.getElementById('name');
+            const emailInput = document.getElementById('email');
+            const messageInput = document.getElementById('message');
+            const submitButton = form.querySelector('button[type="submit"]');
+
+            const validateForm = () => {
+                let isValid = true;
+
+                // Validate name
+                const nameRegex = /^[a-zA-Z\s]{1,32}$/;
+                if (!nameRegex.test(nameInput.value)) {
+                    nameInput.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    nameInput.classList.remove('is-invalid');
+                }
+
+                // Validate email
+                if (!emailInput.checkValidity()) {
+                    emailInput.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    emailInput.classList.remove('is-invalid');
+                }
+
+                // Validate message
+                if (messageInput.value.trim() === '') {
+                    messageInput.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    messageInput.classList.remove('is-invalid');
+                }
+
+                submitButton.disabled = !isValid;
+            };
+
+            nameInput.addEventListener('input', validateForm);
+            emailInput.addEventListener('input', validateForm);
+            messageInput.addEventListener('input', validateForm);
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                validateForm();
+
+                if (!submitButton.disabled) {
+                    // Submit form
+                    fetch(scriptURL, {
+                        method: 'POST',
+                        body: new FormData(form)
+                    })
+                        .then(response => {
+                            alert('Form submitted successfully!');
+                            form.reset();
+                            submitButton.disabled = true; // Disable submit button after submission
+                        })
+                        .catch(error => {
+                            alert('An error occurred.');
+                            console.error('Error:', error);
+                        });
+                }
+            });
         });
     </script>
 </body>
